@@ -1,8 +1,20 @@
 import React from "react";
 import SignUp from "./SignUp";
+import Home from "./Home"
+import TCNumber from "./TcNumber"
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 
 function App(){
-    return <SignUp />
+    return(
+        <Router>
+           <Switch>
+                <Route exact path="/" component={SignUp} />
+                <Route path="/signup" component={SignUp} />
+                <Route path="/home" component={Home} />
+                <Route path="/tcnumber" component={TCNumber} />
+           </Switch> 
+        </Router>
+    )
 }
 
 export default App;

@@ -1,9 +1,11 @@
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
-import app from "../firebase";
+import app, { auth } from "../firebase";
 import { useAuth } from "../contexts/AuthContext"
-
+import { Button } from "react-bootstrap";
+import { Link, useHistory } from "react-router-dom"
+import * as firebaseDatabase from "../contexts/FirebaseDatabase"
 
 const uiConfig = {
     signInFlow: "popup",
@@ -13,13 +15,65 @@ const uiConfig = {
     ],
 };
 
+var database = app.database();
 
-function SignUp(){
+function SignUp() {
+
+    const history = useHistory()
+
+    auth.onAuthStateChanged(user => {
+        // console.log(user);
+        if (user == null) {
+
+        } else {
+            navigateUser(user.email)
+        }
+        console.log(user);
+    })
+
+    function logOutClicked() {
+        auth.signOut().then(() => {
+            console.log("success");
+        }).catch((error) => {
+            console.log("error");
+        });
+    }
+
+    function navigateUser(email) {
+
+        const query = database.ref('Profil');
+        var isUserRegisteredDatabase = false;
+
+        query.once('value', async (snapshot) => {
+            snapshot.forEach(function (childSnapshot) {
+                var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                console.log(childData.email)
+                if (childData.email == email) {
+                    console.log("it founded");
+                    console.log(childData.email)
+                    console.log("it founded");
+                    isUserRegisteredDatabase= true;
+                    console.log("yeter");
+                    
+                } 
+            });
+            if (isUserRegisteredDatabase) {
+            } else {
+                history.push('/tcNumber')
+            }
+
+        });
+
+    }
+
+
     return (
         <>
             <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+            <Button onClick={logOutClicked}>Log out</Button>
         </>
-       // <StyledFirebaseAuth uiconfig={uiconfig} firebaseAuth={auth} />
+        // <StyledFirebaseAuth uiconfig={uiconfig} firebaseAuth={auth} />
     )
 }
 

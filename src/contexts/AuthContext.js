@@ -1,24 +1,36 @@
-import React, { useContext } from 'react'
-import { auth } from '../src/firebase'
+import React, { useContext, useState, useEffect } from "react"
+import { auth } from "../firebase"
 
-const AuthContexts = React.createContext()
+const AuthContext = React.createContext()
 
 export function useAuth(){
-    return useContext(AuthContexts)
-}
-
-export function AuthProvider({ children }){
-    const [currentUser, setCurrentUser] = useState()
-}
-
-const value = {
-    currentUser
+    return useContext(AuthContext)
 }
 
 export default function AuthProvider({ children }) {
+
+    const [currentUser, setCurrentUser] = useState()
+
+    useEffect(() => {
+        const unsubcribe = auth.onAuthStateChanged(user => {
+            setCurrentUser(user)
+        })
+
+        return unsubcribe
+    }, [])
+
+    auth.onAuthStateChanged(user => {
+        console.log(user)
+        setCurrentUser(user)
+    })
+
+    const value = {
+        currentUser
+    }
     return (
         <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     )
 }
+
