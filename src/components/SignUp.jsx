@@ -50,15 +50,12 @@ function SignUp() {
                 var childData = childSnapshot.val();
                 console.log(childData.email)
                 if (childData.email == email) {
-                    console.log("it founded");
                     console.log(childData.email)
-                    console.log("it founded");
-                    isUserRegisteredDatabase= true;
-                    console.log("yeter");
-                    
+                    isUserRegisteredDatabase= true;  
                 } 
             });
             if (isUserRegisteredDatabase) {
+                history.push('/home')
             } else {
                 history.push('/tcNumber')
             }
