@@ -4,6 +4,7 @@ import Help from "./Help";
 import Profile from "./Profile";
 import MapScreen from "./Map";
 import Header from "./Header"
+import OthersHelp from "./Help/OtherHelp"
 
 function Home() {
     return (
