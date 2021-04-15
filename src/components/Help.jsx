@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import MyHelps from "./Help/MyHelp"
 import OthersHelp from "./Help/OtherHelp"
 import HelpHeader from "./Help/HelpHeader"
+import CreateHelp from "./Help/CreateHelp/CreateNewHelp"
 
 var database = app.database();
 
@@ -24,6 +25,7 @@ function Help() {
                 <Switch>
                     <Route path="/help/myhelps" component={MyHelps} />
                     <Route path="/help/otherhelps" component={OthersHelp} />
+                    <Route path="/help/createHelp" component={CreateHelp} />
                 </Switch>
             </Router> 
         </div>

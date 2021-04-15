@@ -7,6 +7,9 @@ function HelpHeader() {
         <div>
             <Navbar bg="dark" variant="dark">
                 <Nav className="mr-auto">
+                    <LinkContainer to="/help/createhelp">
+                        <Nav.Link>Yardım Talebi Oluştur</Nav.Link>
+                    </LinkContainer>
                     <LinkContainer to="/help/myhelps">
                         <Nav.Link>Yardım Taleplerin</Nav.Link>
                     </LinkContainer>
