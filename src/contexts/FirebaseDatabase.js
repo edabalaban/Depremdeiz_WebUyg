@@ -1,29 +1,52 @@
 import app from "../firebase";
-import firebase from "firebase";
+import React, { useContext, useState, useEffect } from "react";
+import { auth } from "../firebase"
 
-var database = app.database();
+const DatabaseContext = React.createContext()
 
-// async function checkSignInUserIsDatabase() {
-
-//     const query = database.ref('Profil');
-//     const result = await query.once('value');
-//     return result;
-// }
-
-async function checkSignInUserIsDatabase(email) {
-
-    const query = database.ref('Profil');
-
-    await query.once('value', async (snapshot) => {
-        snapshot.forEach(function (childSnapshot) {
-            var childKey = childSnapshot.key;
-            var childData = childSnapshot.val();
-            if (childData.email == email) {
-                console.log("it founded");
-                return true;
-            }
-        });
-    });
+export function useFirebaseDatabase() {
+    return useContext(DatabaseContext)
 }
 
-export { checkSignInUserIsDatabase }
+export default function FirebaseDatabaseProvider({ children }) {
+
+    var database = app.database();
+    const [tcNumber, setTcNumber] = useState()
+    const [currentUser, setCurrentUser] = useState()
+
+    useEffect(() => {
+        console.log(tcNumber)
+    }, [])
+
+    auth.onAuthStateChanged(user => {
+        console.log(user)
+    })
+
+
+    function getUserTcNo(email) {
+
+        const query = database.ref('Profil');
+
+        query.once('value', async (snapshot) => {
+            snapshot.forEach(function (childSnapshot) {
+                var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                if (childData.email == email) {
+                    setCurrentUser(childData)
+                    setTcNumber(childData.tc_kimlikNo)
+                }
+            });
+        });
+    }
+
+    const value = {
+        tcNumber,
+        getUserTcNo,
+        currentUser
+    }
+    return (
+        <DatabaseContext.Provider value={value}>
+            {children}
+        </DatabaseContext.Provider>
+    )
+}
