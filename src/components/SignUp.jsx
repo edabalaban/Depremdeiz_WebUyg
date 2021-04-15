@@ -5,7 +5,7 @@ import app, { auth } from "../firebase";
 import { useAuth } from "../contexts/AuthContext"
 import { Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom"
-import * as firebaseDatabase from "../contexts/FirebaseDatabase"
+import { useFirebaseDatabase } from "../contexts/FirebaseDatabase"
 
 const uiConfig = {
     signInFlow: "popup",
@@ -19,6 +19,7 @@ var database = app.database();
 
 function SignUp() {
 
+    const { getUserTcNo} = useFirebaseDatabase()
     const history = useHistory()
 
     auth.onAuthStateChanged(user => {
@@ -50,8 +51,8 @@ function SignUp() {
                 var childData = childSnapshot.val();
                 console.log(childData.email)
                 if (childData.email == email) {
-                    console.log(childData.email)
-                    isUserRegisteredDatabase= true;  
+                    getUserTcNo(childData.email)
+                    isUserRegisteredDatabase= true;
                 } 
             });
             if (isUserRegisteredDatabase) {
