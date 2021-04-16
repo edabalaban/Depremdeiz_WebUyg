@@ -1,15 +1,14 @@
 import React, { useRef } from "react";
 import { Form, Button, Card } from 'react-bootstrap'
-import app from "../firebase"
-import { GetUserTcNo} from "../contexts/FirebaseDatabase"
+import app, { auth } from "../firebase"
 import { useFirebaseDatabase } from "../contexts/FirebaseDatabase"
-import { useAuth } from "../contexts/AuthContext"
+import {  useHistory } from "react-router-dom"
 
 var database = app.database();
 
 function Profile() {
 
-    const { getUserTcNo, tcNumber, currentUser } = useFirebaseDatabase()
+    const {tcNumber, currentUser } = useFirebaseDatabase()
 
     const nameRef = useRef();
     const surnameRef = useRef();
@@ -18,6 +17,16 @@ function Profile() {
     const firstRelativePhoneRef = useRef();
     const secondRelativeNameRef = useRef();
     const secondRelativePhoneRef = useRef();
+
+    const history = useHistory()
+
+    function logOutClicked() {
+        auth.signOut().then(() => {
+            history.push('/signup')
+        }).catch((error) => {
+            console.log("error");
+        });
+    }
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -84,6 +93,9 @@ function Profile() {
                         <Button className="w-100" type="submit">Güncelle</Button>
                     </Form>
                 </Card.Body>
+                <div className="text-center mb-4">
+                    <Button className="text-center mb-4" onClick={logOutClicked}>Çıkış Yap</Button>
+                </div>>
             </Card>
         </>
     )

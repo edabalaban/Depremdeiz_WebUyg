@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom"
 import { useFirebaseDatabase } from "../contexts/FirebaseDatabase"
+import Loader from "react-loader-spinner";
 
 const uiConfig = {
     signInFlow: "popup",
@@ -62,16 +63,17 @@ function SignUp() {
             }
 
         });
-
     }
 
 
     return (
         <>
             <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-            <Button onClick={logOutClicked}>Log out</Button>
+            <Loader type="Oval" color="#ff7777" height={80} width={80} timeout={1000} style={{
+                position: 'absolute', left: '50%', top: '50%',
+                transform: 'translate(-50%, -50%)'
+            }} />
         </>
-        // <StyledFirebaseAuth uiconfig={uiconfig} firebaseAuth={auth} />
     )
 }
 
