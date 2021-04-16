@@ -22,9 +22,6 @@ function Profile() {
     function handleSubmit(e) {
         e.preventDefault()
 
-        console.log(tcNumber);
-        const tc = tcNumber
-
         database.ref('Profil/' + tcNumber).set({
             tc_kimlikNo: tcNumber,
             email: currentUser.email,
@@ -38,6 +35,8 @@ function Profile() {
             user_token: currentUser.user_token,
             user_uid: currentUser.user_uid
         });
+
+        alert("Profil başarıyla güncellendi");
     }
 
     return (
