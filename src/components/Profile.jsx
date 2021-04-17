@@ -8,7 +8,7 @@ var database = app.database();
 
 function Profile() {
 
-    const {tcNumber, currentUser } = useFirebaseDatabase()
+    const { tcNumber, currentUser, getUserTcNo } = useFirebaseDatabase()
 
     const nameRef = useRef();
     const surnameRef = useRef();
@@ -45,7 +45,12 @@ function Profile() {
             user_uid: currentUser.user_uid
         });
 
+        getUserTcNo(currentUser.email)
+
         alert("Profil başarıyla güncellendi");
+
+        
+        
     }
 
     return (

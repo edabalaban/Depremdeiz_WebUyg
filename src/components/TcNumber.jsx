@@ -13,15 +13,10 @@ function TcNumber() {
     const tcNumberRef = useRef()
 
     auth.onAuthStateChanged(user => {
-        // console.log(user);
         if (user == null) {
-
         } else {
             setUser(user)
         }
-        console.log("-----")
-        console.log(user)
-        console.log("-----")
     })
 
     function handleSubmit(e) {
@@ -30,7 +25,7 @@ function TcNumber() {
         const tcNumber = tcNumberRef.current.value
 
         database.ref('Profil/' + tcNumber).set({
-            tc_kimlikNo: tcNumber,
+            tc_kimlikNo: Number(tcNumber),
             email: user.email,
             isim: user.displayName,
             user_uid: user.uid
