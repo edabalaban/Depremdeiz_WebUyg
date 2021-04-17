@@ -36,9 +36,6 @@ function OtherHelp() {
 
     return (
         <>
-            <div>
-                <h1>Other Helps</h1>
-            </div>
             {helpList.map((helpItem, index) => {
                 return <OthersHelpRow
                     key={index}

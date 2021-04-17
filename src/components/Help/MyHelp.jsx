@@ -25,8 +25,9 @@ function MyHelp() {
 
     return (
         <>
+        
             <div>
-                <h1>My helps</h1>
+                {helpList.length == 0 ? <h2>Henüz hiç yardım talebinde bulunmadınız.</h2> : <h7> </h7> }
             </div>
             {helpList.map((helpItem, index) => {
                 return <MyHelpRow
