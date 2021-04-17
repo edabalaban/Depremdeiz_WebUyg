@@ -1,23 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import MeetOtherHelpRow from "./MeetOtherHelpRow"
 import { Form, Button, Card, Container } from 'react-bootstrap'
 import app from "../../../firebase"
 import { useFirebaseDatabase } from "../../../contexts/FirebaseDatabase"
+import { Link, useHistory } from "react-router-dom"
 
 var database = app.database();
 
 function MeetOtherHelp(props) {
 
-    const {tcNumber, currentUser } = useFirebaseDatabase()
-    const location = useLocation();
-    //location.helpItem.tc_kimlikNo}
-    //location.helpKey}
+    const [pageChanged, setPageChanged] = useState(0);
 
+    const { tcNumber} = useFirebaseDatabase()
+    const location = useLocation();
+    const history = useHistory()
+
+    var helpList = location.helpItem.helpList
+    var i;
+    if (pageChanged == 0) {
+        for (i = 0; i < helpList.length; i++) {
+            if (helpList[i].isProvided) {
+                helpList[i].canBeEditable = false
+            } else {
+                helpList[i].canBeEditable = true
+            }
+            console.log(helpList[i])
+        }
+    }
     const type = 'checkbox'
 
     function handleChange(event) {
-        console.log(event.index);
+        helpList[event.target.name].isProvided = event.target.checked
+        setPageChanged(pageChanged + 1)
     }
 
     function getTimeStamp() {
@@ -32,17 +47,21 @@ function MeetOtherHelp(props) {
 
         const newHelpList = []
 
-        location.helpItem.helpList.forEach(function (help) {
-            const newHelp = help
-            if (!help.isProvided){
+        var i
+        for (i = 0; i < location.helpItem.helpList.length; i++) {
+            const newHelp = location.helpItem.helpList[i]
+
+            console.log(newHelp)
+
+            if (location.helpItem.helpList[i].isProvided && location.helpItem.helpList[i].canBeEditable) {
                 newHelp.providedDate = getTimeStamp()
                 newHelp.providedPersonTcNumber = tcNumber
             }
+            delete helpList[i].canBeEditable;
             newHelpList.push(newHelp)
-        });
+        }
 
-
-        database.ref('Test/' + location.helpItem.tc_kimlikNo + '/' +location.helpKey).set({
+        database.ref('Help/' + location.helpItem.tc_kimlikNo + '/' + location.helpKey).set({
             currentDate: location.helpItem.currentDate,
             isCompletelyProvided: false,
             isim: location.helpItem.isim,
@@ -52,7 +71,8 @@ function MeetOtherHelp(props) {
             helpList: newHelpList,
         });
 
-      //  alert("Yardımda bulunacağınız kişiye bilgilerinizi bildirim ile gönderdik. Sizinle irtibata geçmesi için bekleyiniz.");
+        alert("Yardımda bulunacağınız kişiye bilgilerinizi bildirim ile gönderdik. Sizinle irtibata geçmesi için bekleyiniz.");
+        history.push('/help/otherhelps')
     }
 
 
@@ -62,17 +82,18 @@ function MeetOtherHelp(props) {
                 <div className="w-100" style={{ maxWidth: "600px" }}>
                     <div>
                         <Form onSubmit={handleSubmit}>
-                            {location.helpItem.helpList.map((helpItem, index) => {
+                            {helpList.map((helpItem, index) => {
                                 return (
-                                    <Form.Check         
+                                    <Form.Check
                                         key={index}
-                                        index={index}       
+                                        name={index}
                                         onChange={handleChange}
                                         type={type}
                                         id={`default-${type}`}
-                                        label={helpItem.isProvided ? helpItem.demandName + "  (Karşılandı)" : helpItem.demandName}
-                                        defaultChecked={helpItem.isProvided}
-                                        disabled={helpItem.isProvided}
+                                        label={!helpItem.canBeEditable ? helpItem.demandName + "  (Karşılandı)" : helpItem.demandName}
+                                        //  defaultChecked={helpItem.isProvided}
+                                        checked={helpItem.isProvided}
+                                        disabled={!helpItem.canBeEditable}
                                     />
                                 )
                             })}

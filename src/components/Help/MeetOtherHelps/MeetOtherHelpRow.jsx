@@ -18,7 +18,3 @@ function MeetOtherHelpRow(props) {
 }
 
 export default MeetOtherHelpRow;
-
-{/* <h2>{props.helpList.demandName}</h2>
-    <h2>{props.helpList.demandName}</h2>
-    <h2>{props.helpList.demandName}</h2> */}
