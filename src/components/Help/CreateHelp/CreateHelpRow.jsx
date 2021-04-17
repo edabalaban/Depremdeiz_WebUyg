@@ -1,7 +1,7 @@
 import React from "react";
 
 
-function HelpRow(props) {
+function CreateHelpRow(props) {
  
     return (
         <div className="help">
@@ -10,4 +10,4 @@ function HelpRow(props) {
     );
 }
 
-export default HelpRow;
+export default CreateHelpRow;
