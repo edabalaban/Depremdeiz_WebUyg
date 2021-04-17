@@ -17,7 +17,6 @@ function Header() {
                     <LinkContainer to="/profile">
                         <Nav.Link>Profil</Nav.Link>
                     </LinkContainer>
-
                 </Nav>
             </Navbar>
         </div>

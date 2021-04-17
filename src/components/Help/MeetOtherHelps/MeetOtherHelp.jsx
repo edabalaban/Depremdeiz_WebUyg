@@ -61,12 +61,17 @@ function MeetOtherHelp(props) {
             newHelpList.push(newHelp)
         }
 
+        var userToken = location.helpItem.userToken
+        if (userToken == null) {
+            userToken = ""
+        }
+
         database.ref('Help/' + location.helpItem.tc_kimlikNo + '/' + location.helpKey).set({
             currentDate: location.helpItem.currentDate,
             isCompletelyProvided: false,
             isim: location.helpItem.isim,
             tc_kimlikNo: location.helpItem.tc_kimlikNo,
-            userToken: location.helpItem.userToken,
+            userToken: userToken,
             user_uid: location.helpItem.user_uid,
             helpList: newHelpList,
         });

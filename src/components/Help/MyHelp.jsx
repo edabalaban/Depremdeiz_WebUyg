@@ -25,7 +25,7 @@ function MyHelp() {
 
     return (
         <>
-        
+            
             <div>
                 {helpList.length == 0 ? <h2>Henüz hiç yardım talebinde bulunmadınız.</h2> : <h7> </h7> }
             </div>

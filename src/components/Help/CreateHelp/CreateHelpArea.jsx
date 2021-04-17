@@ -30,4 +30,4 @@ function CreateHelpArea(props){
 }
 
 
-export default CreateHelpArea
+export default CreateHelpArea 
