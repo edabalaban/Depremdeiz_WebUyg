@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import app from "../../firebase";
 import { useFirebaseDatabase } from "../../contexts/FirebaseDatabase";
-import HelpRow from "./HelpRow";
+import MyHelpRow from "./MyHelpRow";
 
 var database = app.database();
 
@@ -11,7 +11,6 @@ function MyHelp() {
     const [helpList, setHelpList] = useState([]);
 
     useEffect(() => {
-    
         var myHelpRef = database.ref('Help/' + tcNumber);
         myHelpRef.once('value', async (snapshot) => {
             snapshot.forEach(function (childSnapshot) {
@@ -30,11 +29,11 @@ function MyHelp() {
                 <h1>My helps</h1>
             </div>
             {helpList.map((helpItem, index) => {
-                return <HelpRow
+                return <MyHelpRow
                     key={index}
                     item={helpItem} />
             })}
-        </>       
+        </>
     )
 }
 export default MyHelp;
