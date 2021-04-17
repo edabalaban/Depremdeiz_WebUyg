@@ -1,14 +1,18 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Form, Button, Card } from 'react-bootstrap'
 import app, { auth } from "../firebase"
 import { useFirebaseDatabase } from "../contexts/FirebaseDatabase"
-import {  useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 var database = app.database();
 
 function Profile() {
 
     const { tcNumber, currentUser, getUserTcNo } = useFirebaseDatabase()
+
+    const [myPhone, setMyPhone] = useState(currentUser.telefon_no);
+    const [firstRelativePhone, setFirstRelativePhone] = useState(currentUser.yakın_kisi_tel_no);
+    const [secondRelativePhone, setSecondRelativePhone] = useState(currentUser.ikinci_yakın_kisi_tel_no);
 
     const nameRef = useRef();
     const surnameRef = useRef();
@@ -31,26 +35,85 @@ function Profile() {
     function handleSubmit(e) {
         e.preventDefault()
 
-        database.ref('Profil/' + tcNumber).set({
-            tc_kimlikNo: tcNumber,
-            email: currentUser.email,
-            isim: nameRef.current.value,
-            soyad: surnameRef.current.value,
-            telefon_no: phoneRef.current.value,
-            yakın_kisi_isim: firstRelativeNameRef.current.value,
-            yakın_kisi_tel_no: firstRelativePhoneRef.current.value,
-            ikinci_yakın_kisi_isim: secondRelativeNameRef.current.value,
-            ikinci_yakın_kisi_tel_no: secondRelativePhoneRef.current.value,
-            user_token: currentUser.user_token,
-            user_uid: currentUser.user_uid
-        });
+        var userToken = currentUser.user_token
+        if (currentUser.user_token == null) {
+            userToken = ""
+        }
 
-        getUserTcNo(currentUser.email)
+        if (phoneRef.current.value.length == 15 && firstRelativePhoneRef.current.value.length == 15 && secondRelativePhoneRef.current.value.length == 15) {
+            database.ref('Profil/' + tcNumber).set({
+                tc_kimlikNo: tcNumber,
+                email: currentUser.email,
+                isim: nameRef.current.value,
+                soyad: surnameRef.current.value,
+                telefon_no: phoneRef.current.value,
+                yakın_kisi_isim: firstRelativeNameRef.current.value,
+                yakın_kisi_tel_no: firstRelativePhoneRef.current.value,
+                ikinci_yakın_kisi_isim: secondRelativeNameRef.current.value,
+                ikinci_yakın_kisi_tel_no: secondRelativePhoneRef.current.value,
+                user_token: userToken,
+                user_uid: currentUser.user_uid
+            });
 
-        alert("Profil başarıyla güncellendi");
+            getUserTcNo(currentUser.email)
 
-        
-        
+            alert("Profil başarıyla güncellendi");
+        }else{
+            alert("Lütfen gerekli tüm telefon numarası alanlarını doldurun.");
+        }
+
+    }
+
+    function handleChange(event) {
+
+        if (event.target.name === "myPhone") {
+            setMyPhone(event.target.value)
+        } else if (event.target.name === "firstRelativePhone") {
+            setFirstRelativePhone(event.target.value)
+        } else if (event.target.name === "secondRelativePhone") {
+            setSecondRelativePhone(event.target.value)
+        }
+    }
+
+    function onKeyDown(event) {
+        if (event.keyCode === 8) {
+            //console.log('delete');
+        } else {
+            const phone = getFormattedPhoneNum(event.target.value)
+            if (event.target.name === "myPhone") {
+                setMyPhone(phone)
+            } else if (event.target.name === "firstRelativePhone") {
+                setFirstRelativePhone(phone)
+            } else if (event.target.name === "secondRelativePhone") {
+                setSecondRelativePhone(phone)
+            }
+        }
+    }
+
+    function getFormattedPhoneNum(input) {
+        let output = "(";
+        input.replace(/^\D*(\d{0,3})\D*(\d{0,3})\D*(\d{0,2})\D*(\d{0,1})/, function (match, g1, g2, g3, g4) {
+            if (g1.length) {
+                output += g1;
+                if (g1.length == 3) {
+                    output += ")";
+                    if (g2.length) {
+                        output += " " + g2;
+                        if (g2.length == 3) {
+                            output += " ";
+                            if (g3.length) {
+                                output += g3;
+                                if (g4.length) {
+                                    output += " " + g4
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        );
+        return output;
     }
 
     return (
@@ -77,7 +140,7 @@ function Profile() {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Telefon Numarası:</Form.Label>
-                            <Form.Control type="tel" defaultValue={currentUser.telefon_no}  ref={phoneRef}></Form.Control>
+                            <Form.Control onChange={handleChange} onKeyDown={onKeyDown} name="myPhone" type="tel" value={myPhone} ref={phoneRef}></Form.Control>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>1. Yakın kişinin ismi:</Form.Label>
@@ -85,7 +148,7 @@ function Profile() {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>1. Yakın kişinin telefon numarası:</Form.Label>
-                            <Form.Control defaultValue={currentUser.yakın_kisi_tel_no} ref={firstRelativePhoneRef}></Form.Control>
+                            <Form.Control onChange={handleChange} onKeyDown={onKeyDown} name="firstRelativePhone" type="tel" value={firstRelativePhone} ref={firstRelativePhoneRef}></Form.Control>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>2. Yakın kişinin ismi:</Form.Label>
@@ -93,7 +156,7 @@ function Profile() {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>2. Yakın kişinin telefon numarası:</Form.Label>
-                            <Form.Control defaultValue={currentUser.ikinci_yakın_kisi_tel_no} ref={secondRelativePhoneRef}></Form.Control>
+                            <Form.Control onChange={handleChange} onKeyDown={onKeyDown} name="secondRelativePhone" type="tel" value={secondRelativePhone} ref={secondRelativePhoneRef}></Form.Control>
                         </Form.Group>
                         <Button className="w-100" type="submit">Güncelle</Button>
                     </Form>
